@@ -15,10 +15,7 @@ use crate::workspace::load_workspace;
 pub struct BuildArgs {
     /// Output directory
     #[arg(short, long)]
-    out_dir: Option<String>,
-
-    #[arg(long)]
-    release: Option<bool>,
+    out_dir: Option<String>
 }
 
 #[derive(Deserialize, Debug)]
