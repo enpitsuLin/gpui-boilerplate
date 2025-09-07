@@ -1,0 +1,44 @@
+[package]
+name = "gpui-boilerplate"
+version = "0.1.0"
+description.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[package.metadata]
+product-name = "GPUI Boilerplate"
+identifier = "com.enpitsulin.gpui-boilerplate"
+resources = [
+  "Cargo.toml",
+  "src",
+  "resources/icon-128x128.png",
+  "resources/icon-64x64.png",
+  "resources/icon-256x256.png",
+  "resources/windows/icon.ico",
+]
+icons = [
+  "resources/icon-64x64.png",
+  "resources/icon-128x128.png",
+  "resources/icon-256x256.png",
+  "resources/windows/icon.ico",
+]
+
+[package.metadata.nsis]
+appdata-paths = ["$LOCALAPPDATA/$IDENTIFIER"]
+
+[[bin]]
+name = "gpui-boilerplate"
+path = "src/main.rs"
+
+[dependencies]
+gpui.workspace = true
+gpui_tokio.workspace = true
+gpui-component.workspace = true
+reqwest_client.workspace = true
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows.workspace = true
+
+[build-dependencies]
+embed-resource = "3.0.4"

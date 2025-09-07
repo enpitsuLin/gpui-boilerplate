@@ -1,0 +1,43 @@
+[workspace]
+resolver = "2"
+members = ["xtask", "crates/*"]
+default-members = ["crates/app"]
+
+[workspace.package]
+authors = ['enpitsulin <enpitsulin@gmail.com>']
+license = "MIT"
+repository = "https://github.com/enpitsulin/aria2-gpui"
+description = "A personal gpui boilerplate"
+rust-version = "1.89"
+publish = false
+edition = "2024"
+
+[workspace.dependencies]
+
+#
+# Workspace member crates
+#
+ui = { path = "crates/ui" }
+
+#
+# External crates
+#
+clap = { version = "4.4", features = ["derive"] }
+anyhow = "1.0.86"
+cargo_metadata = "0.19"
+cargo_toml = "0.21"
+serde = { version = "1.0", features = ["derive", "rc"] }
+
+# GPUI
+gpui = { git = "https://github.com/zed-industries/zed" }
+reqwest_client = { git = "https://github.com/zed-industries/zed" }
+gpui_tokio = { git = "https://github.com/zed-industries/zed" }
+gpui-component = { git = "https://github.com/longbridge/gpui-component.git" }
+
+
+[workspace.dependencies.windows]
+version = "0.61"
+features = [
+    "Win32_Security",
+    "Win32_Security_Credentials"
+]

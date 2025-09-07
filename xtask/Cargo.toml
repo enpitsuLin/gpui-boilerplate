@@ -1,0 +1,17 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+publish = false
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+cargo-packager = { version = "0.11.7", default-features = false }
+anyhow.workspace = true
+cargo_metadata.workspace = true
+cargo_toml.workspace = true
+clap = { workspace = true, features = ["derive"] }
+serde.workspace = true
