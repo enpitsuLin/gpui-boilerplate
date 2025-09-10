@@ -13,13 +13,13 @@ struct Args {
 
 #[derive(Subcommand)]
 enum CliCommand {
-    Build(tasks::build::BuildArgs),
+    Pack(tasks::pack::PackArgs),
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
 
     match args.command {
-        CliCommand::Build(args) => tasks::build::run_build(args),
+        CliCommand::Pack(args) => tasks::pack::run_pack(args),
     }
 }

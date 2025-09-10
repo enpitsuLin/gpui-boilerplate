@@ -12,7 +12,7 @@ use serde::Deserialize;
 use crate::workspace::load_workspace;
 
 #[derive(Parser)]
-pub struct BuildArgs {
+pub struct PackArgs {
     /// Output directory
     #[arg(short, long)]
     out_dir: Option<String>
@@ -28,7 +28,7 @@ struct PackageMetadata {
     nsis: Option<NsisConfig>,
 }
 
-pub fn run_build(args: BuildArgs) -> Result<()> {
+pub fn run_pack(args: PackArgs) -> Result<()> {
     let workspace = load_workspace()?;
 
     let app_package = match workspace.workspace_default_members.get(0) {
