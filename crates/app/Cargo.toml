@@ -10,17 +10,10 @@ license.workspace = true
 product-name = "GPUI Boilerplate"
 identifier = "com.enpitsulin.gpui-boilerplate"
 resources = [
-  "Cargo.toml",
-  "src",
-  "resources/icon-128x128.png",
-  "resources/icon-64x64.png",
-  "resources/icon-256x256.png",
-  "resources/windows/icon.ico",
+  "resources/*.png"
 ]
 icons = [
-  "resources/icon-64x64.png",
-  "resources/icon-128x128.png",
-  "resources/icon-256x256.png",
+  "resources/macos/icon.icns",
   "resources/windows/icon.ico",
 ]
 

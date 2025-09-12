@@ -1,3 +1,4 @@
+use core::panic;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -34,7 +35,18 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
         None => return Err(anyhow::anyhow!("app package not found"))
     };
 
-    let dist_dir = workspace.target_directory.to_path_buf().join("release");
+    let dist_dir = workspace
+        .target_directory
+        .to_path_buf()
+        .into_std_path_buf()
+        .join("release");
+
+    let app_dir = app_package
+        .manifest_path
+        .parent()
+        .unwrap()
+        .to_path_buf()
+        .into_std_path_buf();
 
     let manifest = read_cargo_toml(app_package.manifest_path.clone())?;
 
@@ -54,8 +66,6 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
         .unwrap()
         .try_into::<PackageMetadata>()
         .with_context(|| format!("failed to deserialize package metadata"))?;
-
-    println!("metadata: {:?}", metadata);
 
     let out_dit = match &args.out_dir {
         Some(dir) => PathBuf::from(dir),
@@ -78,20 +88,52 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
         .log_level(cargo_packager::config::LogLevel::Trace);
 
     if let Some(resources) = resources {
+        let resources = resources.iter().map(|resource| {
+            //
+            match resource {
+                &Resource::Single(ref path) => {
+                    let path = PathBuf::from(path);
+                    let path = if path.is_absolute() {
+                        path
+                    } else {
+                        app_dir.join(path).into()
+                    };
+                    Resource::Single(path.to_string_lossy().to_string())
+                },
+                &Resource::Mapped { ref src, ref target } => {
+                    let (src, target) = (PathBuf::from(src), PathBuf::from(target));
+                    let src = if src.is_absolute() {
+                        src
+                    } else {
+                        app_dir.join(src).into()
+                    };
+                    let target = if target.is_absolute() {
+                        target.clone()
+                    } else {
+                        app_dir.join(target).into()
+                    };
+                    Resource::Mapped {
+                        src: src.to_string_lossy().to_string(),
+                        target: target
+                    }
+                },
+                _ => panic!("Unsupported resource type")
+            }
+        });
         config_builder = config_builder.resources(resources);
     }
 
     if let Some(icons) = icons {
-        config_builder = config_builder.icons(icons);
+        config_builder = config_builder.icons(icons.iter().map(|item| app_dir.join(item).to_string_lossy().to_string()));
     }
 
     if let Some(nsis) = metadata.nsis {
         config_builder = config_builder.nsis(nsis);
     }
 
-    println!("building binary package...");
-    cargo_packager::package(config_builder.config())
-        .inspect_err(|err| eprintln!("failed to package:\n{err:?}"))?;
+    let config = config_builder.config();
+    println!("building binary package... {:?}", config);
+    cargo_packager::package(config).inspect_err(|err| eprintln!("failed to package:\n{err:?}"))?;
     Ok(())
 }
 
