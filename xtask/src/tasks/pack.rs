@@ -1,7 +1,5 @@
-use std::{
-    fs,
-    path::{Path, PathBuf},
-};
+use std::fs;
+use std::path::{Path, PathBuf};
 
 use anyhow::{Context as _, Ok, Result};
 use cargo_packager::config::{Binary, HookCommand, NsisConfig, Resource};
@@ -25,7 +23,7 @@ struct PackageMetadata {
     product_name: String,
     resources: Option<Vec<Resource>>,
     icons: Option<Vec<String>>,
-    nsis: Option<NsisConfig>,
+    nsis: Option<NsisConfig>
 }
 
 pub fn run_pack(args: PackArgs) -> Result<()> {
@@ -33,7 +31,7 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
 
     let app_package = match workspace.workspace_default_members.get(0) {
         Some(package) => &workspace[package],
-        None => return Err(anyhow::anyhow!("app package not found")),
+        None => return Err(anyhow::anyhow!("app package not found"))
     };
 
     let dist_dir = workspace.target_directory.to_path_buf().join("release");
@@ -61,7 +59,7 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
 
     let out_dit = match &args.out_dir {
         Some(dir) => PathBuf::from(dir),
-        None => workspace.workspace_root.to_path_buf().join("dist").into(),
+        None => workspace.workspace_root.to_path_buf().join("dist").into()
     };
 
     let resources = metadata.resources;

@@ -1,13 +1,13 @@
 #![windows_subsystem = "windows"]
+use gpui::prelude::*;
 use gpui::{
-    App, Application, Bounds, Context, SharedString, Window, WindowBounds, WindowOptions, div, prelude::*,
-    px, rgb, size,
+    App, Application, Bounds, Context, SharedString, Window, WindowBounds, WindowOptions, div, px, rgb, size
 };
 
 mod app;
 
 struct HelloWorld {
-    text: SharedString,
+    text: SharedString
 }
 
 impl Render for HelloWorld {
@@ -35,7 +35,7 @@ impl Render for HelloWorld {
                     .child(div().size_8().bg(gpui::blue()))
                     .child(div().size_8().bg(gpui::yellow()))
                     .child(div().size_8().bg(gpui::black()))
-                    .child(div().size_8().bg(gpui::white())),
+                    .child(div().size_8().bg(gpui::white()))
             )
     }
 }
@@ -62,7 +62,7 @@ fn main() {
                 window_bounds: Some(WindowBounds::Windowed(bounds)),
                 ..Default::default()
             },
-            |_, cx| cx.new(|_| HelloWorld { text: "World".into() }),
+            |_, cx| cx.new(|_| HelloWorld { text: "World".into() })
         )
         .unwrap();
     });

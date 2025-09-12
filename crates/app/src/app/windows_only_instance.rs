@@ -1,10 +1,6 @@
-use windows::{
-    Win32::{
-        Foundation::{ERROR_ALREADY_EXISTS, GetLastError},
-        System::Threading::CreateMutexW,
-    },
-    core::HSTRING,
-};
+use windows::Win32::Foundation::{ERROR_ALREADY_EXISTS, GetLastError};
+use windows::Win32::System::Threading::CreateMutexW;
+use windows::core::HSTRING;
 
 #[inline]
 fn is_first_instance() -> bool {
@@ -18,7 +14,7 @@ fn is_first_instance() -> bool {
 pub fn handle_single_instance() -> bool {
     let is_first_instance = is_first_instance();
     if is_first_instance {
-       // TODO: handle single instance listener
+        // TODO: handle single instance listener
     }
     is_first_instance
 }

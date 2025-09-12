@@ -8,7 +8,7 @@ use clap::{Parser, Subcommand};
 #[command(name = "cargo xtask")]
 struct Args {
     #[command(subcommand)]
-    command: CliCommand,
+    command: CliCommand
 }
 
 #[derive(Subcommand)]
@@ -16,7 +16,7 @@ enum CliCommand {
     /// Build the main application package
     Build(tasks::build::BuildArgs),
     /// Package the application for distribution
-    Pack(tasks::pack::PackArgs),
+    Pack(tasks::pack::PackArgs)
 }
 
 fn main() -> Result<()> {
@@ -24,6 +24,6 @@ fn main() -> Result<()> {
 
     match args.command {
         CliCommand::Build(args) => tasks::build::run_build(args),
-        CliCommand::Pack(args) => tasks::pack::run_pack(args),
+        CliCommand::Pack(args) => tasks::pack::run_pack(args)
     }
 }
