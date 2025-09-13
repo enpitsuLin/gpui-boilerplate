@@ -55,15 +55,29 @@ fn main() {
         println!("Application is already running");
         return;
     }
-    Application::new().run(|cx: &mut App| {
-        let bounds = Bounds::centered(None, size(px(500.), px(500.0)), cx);
-        cx.open_window(
-            WindowOptions {
-                window_bounds: Some(WindowBounds::Windowed(bounds)),
-                ..Default::default()
-            },
-            |_, cx| cx.new(|_| HelloWorld { text: "World".into() })
-        )
+
+    let app = Application::new();
+
+    app.run(|cx: &mut App| {
+        let window_bounds = Bounds::centered(None, size(px(500.), px(500.0)), cx);
+        let opts = WindowOptions {
+            window_bounds: Some(WindowBounds::Windowed(window_bounds)),
+            ..Default::default()
+        };
+
+        cx.on_window_closed(|cx| {
+            if cx.windows().is_empty() {
+                cx.quit();
+            }
+        })
+        .detach();
+
+        // Open a window with default options
+        cx.open_window(opts, |_, cx| {
+            cx.activate(true);
+
+            cx.new(|_| HelloWorld { text: "World".into() })
+        })
         .unwrap();
     });
 }

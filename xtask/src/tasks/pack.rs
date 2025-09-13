@@ -124,7 +124,11 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
     }
 
     if let Some(icons) = icons {
-        config_builder = config_builder.icons(icons.iter().map(|item| app_dir.join(item).to_string_lossy().to_string()));
+        config_builder = config_builder.icons(
+            icons
+                .iter()
+                .map(|item| app_dir.join(item).to_string_lossy().to_string())
+        );
     }
 
     if let Some(nsis) = metadata.nsis {
