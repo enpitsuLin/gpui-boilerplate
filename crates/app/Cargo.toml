@@ -25,10 +25,8 @@ name = "gpui-boilerplate"
 path = "src/main.rs"
 
 [dependencies]
-gpui.workspace = true
-gpui_tokio.workspace = true
+gpui.workspace = true 
 gpui-component.workspace = true
-reqwest_client.workspace = true
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows.workspace = true
