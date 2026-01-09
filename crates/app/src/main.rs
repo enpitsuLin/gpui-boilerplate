@@ -46,7 +46,11 @@ fn main() {
         {
             app::windows_only_instance::handle_single_instance()
         }
-        #[cfg(not(target_os = "windows"))]
+        #[cfg(target_os = "macos")]
+        {
+            app::macos_only_instance::handle_single_instance()
+        }
+        #[cfg(not(any(target_os = "windows", target_os = "macos")))]
         {
             true
         }
