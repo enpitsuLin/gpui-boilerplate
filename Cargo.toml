@@ -24,17 +24,17 @@ ui = { path = "crates/ui" }
 #
 clap = { version = "4.4", features = ["derive"] }
 anyhow = "1.0.86"
-cargo_metadata = "0.19"
-cargo_toml = "0.21"
+cargo_metadata = "0.23"
+cargo_toml = "0.22"
 serde = { version = "1.0", features = ["derive", "rc"] }
 
 # GPUI
 gpui = "0.2.0"
-gpui-component = "0.2.0"
+gpui-component = "0.5.0"
 
 
 [workspace.dependencies.windows]
-version = "0.61"
+version = "0.62"
 features = [
     "Win32_Security",
     "Win32_Security_Credentials"
