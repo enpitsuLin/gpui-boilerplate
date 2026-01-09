@@ -4,17 +4,19 @@ use std::os::unix::io::AsRawFd;
 use std::path::PathBuf;
 
 pub struct SingleInstance {
-    _lock_file: File,
+    _lock_file: File
 }
 
 impl SingleInstance {
     fn try_lock() -> io::Result<Option<Self>> {
         let lock_path = Self::get_lock_file_path()?;
 
+        // Ensure parent directory exists
         if let Some(parent) = lock_path.parent() {
             std::fs::create_dir_all(parent)?;
         }
 
+        // Open or create lock file
         let lock_file = OpenOptions::new()
             .create(true)
             .write(true)
@@ -22,18 +24,15 @@ impl SingleInstance {
             .open(&lock_path)?;
 
         // Try to acquire exclusive lock (non-blocking)
-        let result = unsafe {
-            libc::flock(
-                lock_file.as_raw_fd(),
-                libc::LOCK_EX | libc::LOCK_NB,
-            )
-        };
+        let result = unsafe { libc::flock(lock_file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
 
         if result == 0 {
+            // Lock acquired successfully
             Ok(Some(SingleInstance {
-                _lock_file: lock_file,
+                _lock_file: lock_file
             }))
         } else {
+            // Lock is held by another instance
             Ok(None)
         }
     }
@@ -42,7 +41,7 @@ impl SingleInstance {
         let bundle_id = env!("CARGO_PKG_NAME");
 
         let home_dir = std::env::var("HOME")
-            .map_err(|_| io::Error::new(io::ErrorKind::NotFound, "HOME not set"))?;
+            .map_err(|_| io::Error::new(io::ErrorKind::NotFound, "HOME environment variable not set"))?;
 
         #[cfg(target_os = "macos")]
         let lock_path = {
@@ -57,8 +56,8 @@ impl SingleInstance {
         #[cfg(not(target_os = "macos"))]
         let lock_path = {
             // Use XDG Base Directory specification for Linux/BSD
-            let xdg_data_home = std::env::var("XDG_DATA_HOME")
-                .unwrap_or_else(|_| format!("{}/.local/share", home_dir));
+            let xdg_data_home =
+                std::env::var("XDG_DATA_HOME").unwrap_or_else(|_| format!("{}/.local/share", home_dir));
 
             let mut path = PathBuf::from(xdg_data_home);
             path.push(bundle_id);
@@ -72,6 +71,7 @@ impl SingleInstance {
 
 impl Drop for SingleInstance {
     fn drop(&mut self) {
+        // Explicitly release the lock
         unsafe {
             libc::flock(self._lock_file.as_raw_fd(), libc::LOCK_UN);
         }
@@ -84,7 +84,7 @@ pub fn handle_single_instance() -> bool {
             // Keep the lock alive until program exits
             std::mem::forget(_instance);
             true
-        }
+        },
         Ok(None) => false,
         Err(e) => {
             eprintln!("Warning: Failed to check single instance: {}", e);
