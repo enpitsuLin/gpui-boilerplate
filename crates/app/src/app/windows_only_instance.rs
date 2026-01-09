@@ -4,8 +4,9 @@ use windows::core::HSTRING;
 
 #[inline]
 fn is_first_instance() -> bool {
+    let mutex_name = format!("{}-Instance-Mutex", env!("CARGO_PKG_NAME"));
     unsafe {
-        CreateMutexW(None, false, &HSTRING::from("aria2-gpui-Instance-Mutex"))
+        CreateMutexW(None, false, &HSTRING::from(mutex_name))
             .expect("Unable to create instance mutex.")
     };
     unsafe { GetLastError() != ERROR_ALREADY_EXISTS }
