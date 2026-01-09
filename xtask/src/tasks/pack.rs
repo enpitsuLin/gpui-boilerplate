@@ -136,7 +136,7 @@ pub fn run_pack(args: PackArgs) -> Result<()> {
     }
 
     let config = config_builder.config();
-    println!("building binary package... {:?}", config);
+    println!("building binary package...");
     cargo_packager::package(config).inspect_err(|err| eprintln!("failed to package:\n{err:?}"))?;
     Ok(())
 }

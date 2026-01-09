@@ -11,8 +11,8 @@ fn main() {
 
     match target.as_deref() {
         Ok("macos") => {
-            #[cfg(target_os = "macos")]
-            println!("cargo:warning=macos bundle todo")
+            // macOS bundle is handled by cargo-packager in xtask
+            // See: xtask/src/tasks/pack.rs
         },
         #[cfg(target_os = "windows")]
         Ok("windows") => {
