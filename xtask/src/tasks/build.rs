@@ -32,7 +32,7 @@ pub fn run_build(args: BuildArgs) -> Result<()> {
     let mut cmd = Command::new("cargo");
     cmd.arg("build");
     cmd.arg("--package");
-    cmd.arg(package_name);
+    cmd.arg(package_name.as_ref());
 
     if args.release {
         cmd.arg("--release");
