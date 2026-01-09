@@ -46,11 +46,16 @@ fn main() {
         {
             app::windows_only_instance::handle_single_instance()
         }
-        #[cfg(target_os = "macos")]
+        #[cfg(any(target_os = "macos", target_os = "linux", target_os = "freebsd"))]
         {
-            app::macos_only_instance::handle_single_instance()
+            app::unix_only_instance::handle_single_instance()
         }
-        #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+        #[cfg(not(any(
+            target_os = "windows",
+            target_os = "macos",
+            target_os = "linux",
+            target_os = "freebsd"
+        )))]
         {
             true
         }

@@ -44,11 +44,27 @@ impl SingleInstance {
         let home_dir = std::env::var("HOME")
             .map_err(|_| io::Error::new(io::ErrorKind::NotFound, "HOME not set"))?;
 
-        let mut lock_path = PathBuf::from(home_dir);
-        lock_path.push("Library");
-        lock_path.push("Application Support");
-        lock_path.push(bundle_id);
-        lock_path.push("instance.lock");
+        #[cfg(target_os = "macos")]
+        let lock_path = {
+            let mut path = PathBuf::from(&home_dir);
+            path.push("Library");
+            path.push("Application Support");
+            path.push(bundle_id);
+            path.push("instance.lock");
+            path
+        };
+
+        #[cfg(not(target_os = "macos"))]
+        let lock_path = {
+            // Use XDG Base Directory specification for Linux/BSD
+            let xdg_data_home = std::env::var("XDG_DATA_HOME")
+                .unwrap_or_else(|_| format!("{}/.local/share", home_dir));
+
+            let mut path = PathBuf::from(xdg_data_home);
+            path.push(bundle_id);
+            path.push("instance.lock");
+            path
+        };
 
         Ok(lock_path)
     }
@@ -84,9 +100,20 @@ mod tests {
     #[test]
     fn test_lock_file_path() {
         let path = SingleInstance::get_lock_file_path().unwrap();
-        assert!(path.to_str().unwrap().contains("Library/Application Support"));
-        assert!(path.to_str().unwrap().contains(env!("CARGO_PKG_NAME")));
-        assert!(path.to_str().unwrap().ends_with("instance.lock"));
+        let path_str = path.to_str().unwrap();
+
+        #[cfg(target_os = "macos")]
+        {
+            assert!(path_str.contains("Library/Application Support"));
+        }
+
+        #[cfg(not(target_os = "macos"))]
+        {
+            assert!(path_str.contains(".local/share") || path_str.contains("XDG_DATA_HOME"));
+        }
+
+        assert!(path_str.contains(env!("CARGO_PKG_NAME")));
+        assert!(path_str.ends_with("instance.lock"));
     }
 
     #[test]

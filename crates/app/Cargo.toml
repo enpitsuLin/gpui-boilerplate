@@ -31,7 +31,7 @@ gpui-component.workspace = true
 [target.'cfg(target_os = "windows")'.dependencies]
 windows.workspace = true
 
-[target.'cfg(target_os = "macos")'.dependencies]
+[target.'cfg(unix)'.dependencies]
 libc = "0.2"
 
 [build-dependencies]
