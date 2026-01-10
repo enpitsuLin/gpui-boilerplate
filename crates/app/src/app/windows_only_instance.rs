@@ -24,10 +24,13 @@ impl SingleInstance {
 
         let handle = unsafe {
             CreateMutexW(None, false, &HSTRING::from(mutex_name))
-                .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?
+                .map_err(|e: windows::core::Error| io::Error::new(io::ErrorKind::Other, e.to_string()))?
         };
 
-        let is_first = unsafe { windows::Win32::Foundation::GetLastError() != ERROR_ALREADY_EXISTS };
+        // Check GetLastError immediately after CreateMutexW to avoid it being overwritten
+        let is_first = unsafe {
+            windows::Win32::Foundation::GetLastError().0 != ERROR_ALREADY_EXISTS.0
+        };
 
         if is_first {
             Ok(Some(SingleInstance {
