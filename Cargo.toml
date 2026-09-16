@@ -30,7 +30,7 @@ serde = { version = "1.0", features = ["derive", "rc"] }
 
 # GPUI
 gpui = "0.2.0"
-gpui-component = "0.5.0"
+gpui-component = "0.6.0"
 
 
 [workspace.dependencies.windows]
